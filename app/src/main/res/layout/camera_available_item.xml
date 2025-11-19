@@ -19,7 +19,7 @@
             android:layout_width="120dp"
             android:layout_height="110dp"
             android:scaleType="centerCrop"
-            android:background="@color/gray"
+            android:background="@color/grey"
             android:layout_marginEnd="15dp" />
 
         <!-- INFORMASI -->

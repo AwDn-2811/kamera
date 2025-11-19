@@ -20,7 +20,6 @@ public class MyApp extends Application {
         HashMap config = new HashMap();
         config.put("cloud_name", "dskqwokji");
         config.put("api_key", "868821764693376");
-        config.put("api_secret", "lEgo-9HFqAICSHAvYj64WkG46Ew");
 
         try {
             MediaManager.init(this, config);

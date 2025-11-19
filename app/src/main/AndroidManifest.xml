@@ -67,21 +67,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".creditCardActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".MakePaymentActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".addCarActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -104,20 +90,6 @@
         </activity>
         <activity
             android:name=".feedback"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".CarInformation"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".CarsAvailable"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

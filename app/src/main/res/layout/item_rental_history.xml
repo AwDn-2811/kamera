@@ -20,7 +20,7 @@
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:scaleType="centerCrop"
-            android:background="@color/gray"
+            android:background="@color/grey"
             android:layout_marginRight="12dp" />
 
         <LinearLayout
