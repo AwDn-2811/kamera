@@ -16,9 +16,9 @@ import java.util.ArrayList;
 public class HomeCameraAdapter extends RecyclerView.Adapter<HomeCameraAdapter.HomeCameraHolder> {
 
     Context context;
-    ArrayList<HomeCameraCard> list;
+    ArrayList<AvailableCamera> list;
 
-    public HomeCameraAdapter(Context context, ArrayList<HomeCameraCard> list) {
+    public HomeCameraAdapter(Context context, ArrayList<AvailableCamera> list) {
         this.context = context;
         this.list = list;
     }
@@ -33,7 +33,7 @@ public class HomeCameraAdapter extends RecyclerView.Adapter<HomeCameraAdapter.Ho
 
     @Override
     public void onBindViewHolder(@NonNull HomeCameraHolder holder, int position) {
-        HomeCameraCard camera = list.get(position);
+        HomeCameraCard camera = (HomeCameraCard) list.get(position);
 
         // PERBAIKAN: Menyesuaikan data dengan field yang ada.
         // Layout memiliki brand, model, type. Di sini kita set brand ke text view brand.

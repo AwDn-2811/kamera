@@ -1,5 +1,6 @@
 package com.example.android_projects;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewHold
     @NonNull
     @Override
     public ReviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.car_review_item, parent, false);
+        View v = LayoutInflater.from(context).inflate(R.layout.item_review_camera, parent, false);
         return new ReviewHolder(v);
     }
 
@@ -48,13 +49,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewHold
         TextView userName, rating, comment;
         ImageView userImage;
 
+        @SuppressLint("WrongViewCast")
         public ReviewHolder(@NonNull View itemView) {
             super(itemView);
 
-            userImage = itemView.findViewById(R.id.feedbackUser_img);
-            userName = itemView.findViewById(R.id.feedbackUsername_txt);
-            rating = itemView.findViewById(R.id.feedbackRating_txt);
-            comment = itemView.findViewById(R.id.comment_txt);
+            userImage = itemView.findViewById(R.id.review_user_photo);
+            userName = itemView.findViewById(R.id.review_user_name);
+            rating = itemView.findViewById(R.id.review_rating);
+            comment = itemView.findViewById(R.id.review_comment);
         }
     }
 }
