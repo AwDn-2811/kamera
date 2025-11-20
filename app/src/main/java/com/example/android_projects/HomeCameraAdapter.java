@@ -16,9 +16,9 @@ import java.util.ArrayList;
 public class HomeCameraAdapter extends RecyclerView.Adapter<HomeCameraAdapter.HomeCameraHolder> {
 
     Context context;
-    ArrayList<AvailableCamera> list;
+    ArrayList<HomeCameraCard> list;
 
-    public HomeCameraAdapter(Context context, ArrayList<AvailableCamera> list) {
+    public HomeCameraAdapter(Context context, ArrayList<HomeCameraCard> list) {
         this.context = context;
         this.list = list;
     }
