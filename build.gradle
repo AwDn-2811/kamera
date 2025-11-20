@@ -13,6 +13,15 @@ buildscript {
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id 'com.android.application' version '7.3.1' apply false
-    id 'com.android.library' version '7.3.1' apply false
+    // Pastikan Anda menggunakan versi yang mendukung SDK baru.
+    // Kami mengganti 7.3.1 (lama) ke 8.2.0 (baru)
+    id 'com.android.application' version '8.2.0' apply false
+    id 'com.android.library' version '8.2.0' apply false
+    id 'com.google.gms.google-services' version '4.4.0' apply false
+}
+// Tambahkan baris ini untuk mengatasi masalah Java yang mungkin muncul dengan Gradle baru
+allprojects {
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs.add("-Xlint:unchecked")
+    }
 }
