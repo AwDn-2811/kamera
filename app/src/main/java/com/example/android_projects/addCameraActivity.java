@@ -1,6 +1,8 @@
 package com.example.android_projects;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,12 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.callback.ErrorInfo;
 import com.cloudinary.android.callback.UploadCallback;
-import com.example.android_projects.R; // Pastikan ini mengarah ke file R yang benar
-import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -46,39 +45,37 @@ public class addCameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 1. Inisialisasi Cloudinary (Dilakukan di onCreate untuk memastikan ketersediaan)
+        // 1. Inisialisasi Cloudinary
         initCloudinary();
 
         setContentView(R.layout.activity_add_camera);
 
         // 2. Binding Views
-        camera_preview = findViewById(R.id.camera_preview);
-        input_brand = findViewById(R.id.input_brand);
-        input_model = findViewById(R.id.input_model);
-        input_type = findViewById(R.id.input_type);
+        camera_preview   = findViewById(R.id.camera_preview);
+        input_brand      = findViewById(R.id.input_brand);
+        input_model      = findViewById(R.id.input_model);
+        input_type       = findViewById(R.id.input_type);
         input_resolution = findViewById(R.id.input_resolution);
-        input_price = findViewById(R.id.input_price);
-        input_location = findViewById(R.id.input_location);
+        input_price      = findViewById(R.id.input_price);
+        input_location   = findViewById(R.id.input_location);
 
         btn_choose = findViewById(R.id.btn_choose_image);
-        btn_save = findViewById(R.id.btn_save_camera);
+        btn_save   = findViewById(R.id.btn_save_camera);
 
         progressDialog = new CustomProgressDialog(this);
 
-        // 3. Set Listener
+        // 3. Listener
         btn_choose.setOnClickListener(v -> chooseImage());
         btn_save.setOnClickListener(v -> saveCamera());
     }
 
     private void initCloudinary() {
-        // Cek agar tidak double init
         try {
-            MediaManager.get();
+            MediaManager.get(); // kalau sudah init, ini tidak error
         } catch (Exception e) {
             Map<String, Object> config = new HashMap<>();
-            // Gunakan konfigurasi Cloudinary Anda
             config.put("cloud_name", "dskqwokji");
-            config.put("api_key", "868821764693376");
+            config.put("api_key",    "868821764693376");
             config.put("api_secret", "lEgo-9HFqAICSHAvYj64WkG46Ew");
             MediaManager.init(this, config);
         }
@@ -140,9 +137,8 @@ public class addCameraActivity extends AppCompatActivity {
 
         progressDialog.show("Mengunggah gambar...");
 
-        // 1. Upload Gambar ke Cloudinary
         MediaManager.get().upload(imageUri)
-                .option("folder", "camera_rentals") // Folder di Cloudinary
+                .option("folder", "camera_rentals")
                 .callback(new UploadCallback() {
                     @Override
                     public void onStart(String requestId) {
@@ -151,41 +147,40 @@ public class addCameraActivity extends AppCompatActivity {
 
                     @Override
                     public void onProgress(String requestId, long bytes, long totalBytes) {
-                        // Opsi: Update progress bar
+                        // Bisa dipakai untuk update progress bar
                     }
 
                     @Override
                     public void onSuccess(String requestId, Map resultData) {
                         String imageUrl = (String) resultData.get("secure_url");
                         Log.d(TAG, "Upload Success: " + imageUrl);
-
-                        // 2. Simpan Data ke Firestore setelah upload sukses
-                        saveCameraDataToFirestore(imageUrl);
+                        saveCameraDataToRealtimeDb(imageUrl);
                     }
 
                     @Override
                     public void onError(String requestId, ErrorInfo error) {
                         progressDialog.dismiss();
                         Log.e(TAG, "Upload Error: " + error.getDescription());
-                        Toast.makeText(addCameraActivity.this, "Gagal mengunggah gambar: " + error.getDescription(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(addCameraActivity.this,
+                                "Gagal mengunggah gambar: " + error.getDescription(),
+                                Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onReschedule(String requestId, ErrorInfo error) {
-                        // Not implemented
+                        // Tidak digunakan
                     }
                 }).dispatch();
     }
 
-    // === FUNGSI PENYIMPANAN BARU (MENGGUNAKAN FIRESTORE) ===
-    private void saveCameraDataToFirestore(String imageUrl) {
+    // === SIMPAN DATA KE REALTIME DATABASE ===
+    private void saveCameraDataToRealtimeDb(String imageUrl) {
 
-        // Ambil data dari input field
-        String brand = input_brand.getText().toString().trim();
-        String model = input_model.getText().toString().trim();
-        String type = input_type.getText().toString().trim();
+        String brand      = input_brand.getText().toString().trim();
+        String model      = input_model.getText().toString().trim();
+        String type       = input_type.getText().toString().trim();
         String resolution = input_resolution.getText().toString().trim();
-        String address = input_location.getText().toString().trim();
+        String address    = input_location.getText().toString().trim();
 
         double priceValue = 0;
         try {
@@ -194,51 +189,68 @@ public class addCameraActivity extends AppCompatActivity {
             Log.e(TAG, "Harga tidak valid", e);
         }
 
-        // Dapatkan OwnerId (penting!)
-        String ownerId = "";
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            ownerId = user.getUid();
-        } else {
+        // 🔥 Ambil userId dari SharedPreferences (di-set di login.java)
+        SharedPreferences sp = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        String ownerId = sp.getString("userId", null);
+
+        if (ownerId == null) {
             progressDialog.dismiss();
-            Toast.makeText(this, "Anda harus login untuk menambahkan kamera.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Session login hilang, silakan login ulang.", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, login.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
             return;
         }
 
+        Log.d(TAG, "saveCameraDataToRealtimeDb: ownerId = " + ownerId);
 
-        // 4. Siapkan Data Map (Sesuai Skema Firestore: Collection 'cameras')
+        // Data kamera yang akan disimpan
         Map<String, Object> cam = new HashMap<>();
-        cam.put("name", brand + " " + model); // Gabungkan brand & model
+        cam.put("name", brand + " " + model);
         cam.put("brand", brand);
-        cam.put("description", type + " / " + resolution); // Gabungkan type & resolution menjadi deskripsi
+        cam.put("description", type + " / " + resolution);
         cam.put("pricePerDay", priceValue);
         cam.put("address", address);
         cam.put("imageUrl", imageUrl);
         cam.put("ownerId", ownerId);
-        cam.put("isAvailable", true); // Status default
+        cam.put("isAvailable", true);
         cam.put("ratingAverage", 0.0);
         cam.put("reviewCount", 0);
-        cam.put("createdAt", Timestamp.now());
+        cam.put("createdAt", ServerValue.TIMESTAMP);
 
-        // **CATATAN PENTING UNTUK GEOLOCATION**
-        // Karena tidak ada input Lat/Lng, kita gunakan nilai default/dummy.
-        // Anda harus mengimplementasikan API Geocoding atau Location Picker
-        // untuk mendapatkan nilai Lat/Lng yang akurat.
-        cam.put("location", new GeoPoint(-6.200000, 106.816666));
+        // lokasi dummy
+        Map<String, Object> location = new HashMap<>();
+        location.put("lat", -6.200000);
+        location.put("lng", 106.816666);
+        cam.put("location", location);
 
+        // Simpan ke Realtime Database: node "cameras"
+        DatabaseReference camerasRef = FirebaseDatabase.getInstance()
+                .getReference("cameras");
 
-        // 5. Simpan ke Collection "cameras" (Menggunakan .add() untuk Auto-ID)
-        FirebaseFirestore.getInstance().collection("cameras")
-                .add(cam)
-                .addOnSuccessListener(documentReference -> {
+        String cameraId = camerasRef.push().getKey();
+        if (cameraId == null) {
+            progressDialog.dismiss();
+            Toast.makeText(this, "Gagal membuat ID kamera.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        camerasRef.child(cameraId)
+                .setValue(cam)
+                .addOnSuccessListener(unused -> {
                     progressDialog.dismiss();
-                    Toast.makeText(addCameraActivity.this, "Kamera berhasil disimpan dengan ID: " + documentReference.getId(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(addCameraActivity.this,
+                            "Kamera berhasil disimpan!",
+                            Toast.LENGTH_LONG).show();
                     finish();
                 })
                 .addOnFailureListener(e -> {
                     progressDialog.dismiss();
-                    Log.e(TAG, "Error saving to Firestore", e);
-                    Toast.makeText(addCameraActivity.this, "Gagal menyimpan data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "Error saving to Realtime DB", e);
+                    Toast.makeText(addCameraActivity.this,
+                            "Gagal menyimpan data: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
                 });
     }
 }

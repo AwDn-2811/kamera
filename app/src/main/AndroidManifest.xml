@@ -5,8 +5,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".MyApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,92 +19,44 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Android_Projects"
         tools:targetApi="31">
+
+        <!-- LAUNCHER -->
         <activity
             android:name=".Splash"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
 
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".UpdateProfile"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".UserActivity"
-            android:exported="false"
-            android:label="@string/title_activity_user">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".Profile"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".ContactUs"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".AboutUs"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".MakePaymentActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".registration"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".login"
-            android:exported="false">
+        <!-- ALL ACTIVITIES -->
+        <activity android:name=".UpdateProfile" android:exported="false" />
+        <activity android:name=".UserActivity" android:exported="false" />
+        <activity android:name=".Profile" android:exported="false" />
+        <activity android:name=".ContactUs" android:exported="false" />
+        <activity android:name=".AboutUs" android:exported="false" />
+        <activity android:name=".MakePaymentActivity" android:exported="false" />
+        <activity android:name=".registration" android:exported="false" />
+        <activity android:name=".login" android:exported="false" />
+        <activity android:name=".feedback" android:exported="false" />
+        <activity android:name=".HomePage" android:exported="false" />
 
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+        <!-- Add Camera -->
         <activity
-            android:name=".feedback"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:name=".addCameraActivity"
+            android:exported="false" />
+
+        <!-- Detail Kamera -->
         <activity
-            android:name=".HomePage"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:name=".CameraInformation"
+            android:exported="false" />
+
+        <!-- 🔥 Halaman Tambah Ulasan -->
+        <activity
+            android:name=".AddCameraReviewActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
