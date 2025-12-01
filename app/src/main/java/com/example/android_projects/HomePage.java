@@ -17,13 +17,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import androidx.annotation.NonNull;
 
 public class HomePage extends AppCompatActivity {
     private static final String TAG = "HomePage";
@@ -45,14 +49,14 @@ public class HomePage extends AppCompatActivity {
     private HomeCameraAdapter cameraAdapter;
     private ArrayList<HomeCameraCard> listOfCameras;
 
-    private FirebaseFirestore db;
+    private FirebaseDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        db = FirebaseFirestore.getInstance();
+        db = FirebaseDatabase.getInstance();
         setupView();
     }
 
@@ -185,46 +189,53 @@ public class HomePage extends AppCompatActivity {
     private void getNearCameras() {
 
         recycler_layout.setHasFixedSize(true);
-        recycler_layout.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recycler_layout.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         listOfCameras = new ArrayList<>();
         cameraAdapter = new HomeCameraAdapter(this, listOfCameras);
         recycler_layout.setAdapter(cameraAdapter);
 
-        LocationHelper locationHelper = new LocationHelper(this);
-        String myLocation = locationHelper.getLocation();
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference("cameras");
 
-        FirebaseFirestore.getInstance().collection("cameras")
-                .limit(10)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    listOfCameras.clear();
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                    int count = 0;
-                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                listOfCameras.clear();
+                int count = 0;
 
-                        Boolean isAvailable = document.getBoolean("isAvailable");
-                        if (isAvailable != null && isAvailable && count < 6) {
+                for (DataSnapshot data : snapshot.getChildren()) {
 
-                            HomeCameraCard cam = new HomeCameraCard();
-                            cam.id = document.getId();
-                            cam.name = document.getString("brand") + " " + document.getString("model");
+                    Boolean isAvailable = data.child("isAvailable").getValue(Boolean.class);
 
-                            Number price = document.getDouble("pricePerDay");
-                            cam.price = "Rp " + (price != null ? price.intValue() : 0) + " /Hari";
+                    if (isAvailable != null && isAvailable && count < 6) {
 
-                            cam.setImageUrl(document.getString("imageUrl"));
+                        HomeCameraCard cam = new HomeCameraCard();
+                        cam.id = data.getKey();
 
-                            listOfCameras.add(cam);
-                            count++;
-                        }
+                        String brand = data.child("brand").getValue(String.class);
+                        String model = data.child("model").getValue(String.class);
+                        cam.name = brand + " " + model;
+
+                        Long price = data.child("pricePerDay").getValue(Long.class);
+                        cam.price = "Rp " + (price != null ? price : 0) + " /Hari";
+
+                        cam.setImageUrl(data.child("imageUrl").getValue(String.class));
+
+                        listOfCameras.add(cam);
+                        count++;
                     }
+                }
 
-                    cameraAdapter.notifyDataSetChanged();
+                cameraAdapter.notifyDataSetChanged();
+            }
 
-                }).addOnFailureListener(e -> {
-                    Log.e(TAG, "Error loading cameras: ", e);
-                    Toast.makeText(HomePage.this, "Gagal memuat data", Toast.LENGTH_SHORT).show();
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "DB Error: " + error.getMessage());
+                Toast.makeText(HomePage.this, "Gagal memuat data", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
