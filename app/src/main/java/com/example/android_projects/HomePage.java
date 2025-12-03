@@ -1,12 +1,10 @@
 package com.example.android_projects;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -47,7 +45,7 @@ public class HomePage extends AppCompatActivity {
 
     // Adapter & List Kamera
     private HomeCameraAdapter cameraAdapter;
-    private ArrayList<HomeCameraCard> listOfCameras;
+    private ArrayList<CameraCard> listOfCameras;
 
     private FirebaseDatabase db;
 
@@ -98,10 +96,7 @@ public class HomePage extends AppCompatActivity {
 
         // 🔥 FIX HOME BUTTON (YANG TADI TIDAK BERFUNGSI)
         menu_home.setOnClickListener(v -> {
-            // Karena sudah di HomePage, kita cukup refresh
-            Intent i = new Intent(this, HomePage.class);
-            startActivity(i);
-            finish(); // opsional, agar tidak menumpuk
+            // Do nothing, you're already on HomePage
         });
 
         menu_aboutus.setOnClickListener(v -> {
@@ -124,7 +119,7 @@ public class HomePage extends AppCompatActivity {
         tf_startDate.setOnClickListener(view -> {
             DatePickerDialog dialog = new DatePickerDialog(HomePage.this, (view1, year1, month1, dayOfMonth) -> {
                 month1 += 1;
-                tf_startDate.setText(dayOfMonth + "/" + month1 + "/" + year1);
+                tf_startDate.setText(String.format("%02d/%02d/%04d", dayOfMonth, month1, year1));
             }, year, month, day);
             dialog.show();
         });
@@ -132,7 +127,7 @@ public class HomePage extends AppCompatActivity {
         tf_endDate.setOnClickListener(view -> {
             DatePickerDialog dialog = new DatePickerDialog(HomePage.this, (view1, year1, month1, dayOfMonth) -> {
                 month1 += 1;
-                tf_endDate.setText(dayOfMonth + "/" + month1 + "/" + year1);
+                tf_endDate.setText(String.format("%02d/%02d/%04d", dayOfMonth, month1, year1));
             }, year, month, day);
             dialog.show();
         });
@@ -153,11 +148,20 @@ public class HomePage extends AppCompatActivity {
         }
 
         String location = edt_pickupLocation.getText().toString();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                        .withResolverStyle(java.time.format.ResolverStyle.LENIENT);
 
         try {
-            LocalDate startDate = LocalDate.parse(tf_startDate.getText().toString(), formatter);
-            LocalDate endDate = LocalDate.parse(tf_endDate.getText().toString(), formatter);
+            String cleanStart = tf_startDate.getText().toString().replaceAll("[^0-9/]", "");
+            String cleanEnd = tf_endDate.getText().toString().replaceAll("[^0-9/]", "");
+
+            Log.d("DATE_DEBUG", "RawStart=[" + tf_startDate.getText() + "]");
+            Log.d("DATE_DEBUG", "CleanStart=[" + cleanStart + "]");
+
+            LocalDate startDate = LocalDate.parse(cleanStart, formatter);
+            LocalDate endDate = LocalDate.parse(cleanEnd, formatter);
 
             if (startDate.isBefore(LocalDate.now())) {
                 tf_warning.setText("Tanggal sewa tidak boleh di masa lalu");
@@ -211,15 +215,18 @@ public class HomePage extends AppCompatActivity {
 
                     if (isAvailable != null && isAvailable && count < 6) {
 
-                        HomeCameraCard cam = new HomeCameraCard();
-                        cam.id = data.getKey();
+                        CameraCard cam = new CameraCard();
+                        cam.setId(data.getKey());
 
                         String brand = data.child("brand").getValue(String.class);
                         String model = data.child("model").getValue(String.class);
-                        cam.name = brand + " " + model;
+
+                        cam.setBrand(brand);
+                        cam.setModel(model);
 
                         Long price = data.child("pricePerDay").getValue(Long.class);
-                        cam.price = "Rp " + (price != null ? price : 0) + " /Hari";
+                        String priceText = "Rp " + (price != null ? price : 0) + " /Hari";
+                        cam.setPrice(priceText);
 
                         cam.setImageUrl(data.child("imageUrl").getValue(String.class));
 

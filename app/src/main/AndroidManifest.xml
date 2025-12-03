@@ -30,6 +30,7 @@
         </activity>
 
         <!-- ALL ACTIVITIES -->
+        <activity android:name=".CamerasAvailable" android:exported="false" />
         <activity android:name=".UpdateProfile" android:exported="false" />
         <activity android:name=".UserActivity" android:exported="false" />
         <activity android:name=".Profile" android:exported="false" />
