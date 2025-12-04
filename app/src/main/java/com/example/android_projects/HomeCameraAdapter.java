@@ -18,9 +18,9 @@ import java.util.ArrayList;
 public class HomeCameraAdapter extends RecyclerView.Adapter<HomeCameraAdapter.HomeCameraHolder> {
 
     Context context;
-    ArrayList<CameraCard> list;
+    ArrayList<AvailableCamera> list;
 
-    public HomeCameraAdapter(Context context, ArrayList<CameraCard> list) {
+    public HomeCameraAdapter(Context context, ArrayList<AvailableCamera> list) {
         this.context = context;
         this.list = list;
     }
@@ -34,18 +34,19 @@ public class HomeCameraAdapter extends RecyclerView.Adapter<HomeCameraAdapter.Ho
 
     @Override
     public void onBindViewHolder(@NonNull HomeCameraHolder holder, int position) {
-        CameraCard camera = list.get(position);
 
-        holder.txt_brand.setText(camera.getBrand());
-        holder.txt_model.setText(camera.getModel());
-        holder.txt_type.setText(camera.getType());
-        holder.txt_price.setText(camera.getPrice());
+        AvailableCamera cam = list.get(position);
+
+        holder.txt_brand.setText(cam.getBrand());
+        holder.txt_model.setText(cam.getName());
+        holder.txt_type.setText(cam.getDescription());
+        holder.txt_price.setText("Rp " + cam.getPricePerDay() + " / Hari");
 
         Glide.with(context)
-                .load(camera.getImageUrl())
+                .load(cam.getImageUrl())
                 .into(holder.img_camera);
 
-        holder.bind(camera);
+        holder.bind(cam);
     }
 
     @Override
@@ -53,12 +54,12 @@ public class HomeCameraAdapter extends RecyclerView.Adapter<HomeCameraAdapter.Ho
         return list.size();
     }
 
-    public static class HomeCameraHolder extends RecyclerView.ViewHolder {
+    public class HomeCameraHolder extends RecyclerView.ViewHolder {
 
         ImageView img_camera;
         TextView txt_brand, txt_price, txt_model, txt_type;
 
-        CameraCard cameraData;
+        AvailableCamera cameraData;
 
         public HomeCameraHolder(@NonNull View itemView) {
             super(itemView);
@@ -71,12 +72,12 @@ public class HomeCameraAdapter extends RecyclerView.Adapter<HomeCameraAdapter.Ho
 
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(v.getContext(), CameraInformation.class);
-                intent.putExtra("cameraID", cameraData.getId());
+                intent.putExtra("cameraId", cameraData.getId());
                 v.getContext().startActivity(intent);
             });
         }
 
-        public void bind(CameraCard data) {
+        public void bind(AvailableCamera data) {
             this.cameraData = data;
         }
     }

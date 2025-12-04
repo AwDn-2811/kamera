@@ -2,82 +2,33 @@ package com.example.android_projects;
 
 public class AvailableCamera {
 
-    public String id;
-    public String brand;
-    public String model;
-    public String type;
-    public String resolution;
-    public String price;
-    public String location;
-
-    private String imageUrl;   // *** penting untuk Cloudinary ***
+    private String id;
+    private String name;
+    private String brand;
+    private String description;
+    private String address;
+    private String imageUrl;
+    private long pricePerDay;
 
     public AvailableCamera() {
+        // required for Firebase
     }
 
-    // =================== GETTERS ===================
-    public String getId() {
-        return id;
-    }
+    // GETTERS
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public String getBrand() { return brand; }
+    public String getDescription() { return description; }
+    public String getAddress() { return address; }
+    public String getImageUrl() { return imageUrl; }
+    public long getPricePerDay() { return pricePerDay; }
 
-    public String getBrand() {
-        return brand;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getResolution() {
-        return resolution;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    // =================== SETTERS ===================
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setResolution(String resolution) {
-        this.resolution = resolution;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+    // SETTERS
+    public void setId(String id) { this.id = id; }
+    public void setName(String name) { this.name = name; }
+    public void setBrand(String brand) { this.brand = brand; }
+    public void setDescription(String description) { this.description = description; }
+    public void setAddress(String address) { this.address = address; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public void setPricePerDay(long pricePerDay) { this.pricePerDay = pricePerDay; }
 }

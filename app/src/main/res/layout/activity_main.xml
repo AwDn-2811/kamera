@@ -20,7 +20,7 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="46dp"
-            android:background="@color/grey"
+            android:background="@color/silver"
             android:padding="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -28,14 +28,14 @@
 
             <ImageView
                 android:id="@+id/img_headerLogo"
-                android:layout_width="94dp"
-                android:layout_height="29dp"
+                android:layout_width="200dp"
+                android:layout_height="30dp"
                 android:contentDescription="@string/logo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/logo" />
+                app:srcCompat="@drawable/logo_rentcam" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -46,7 +46,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
-            android:background="@color/grey"
+            android:background="@color/silver"
             android:orientation="vertical"
             android:paddingLeft="40dp"
             android:paddingTop="40dp"
@@ -121,7 +121,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="20dp"
-            android:text="Cars Near You (10 km)"
+            android:text="Camera near you (10 km)"
             android:textColor="@color/secondary1"
             android:textSize="28sp" />
 
@@ -153,14 +153,14 @@
                 android:layout_width="51dp"
                 android:layout_height="42dp"
                 android:layout_gravity="center"
-                app:srcCompat="@drawable/addcar" />
+                app:srcCompat="@drawable/ic_add" />
 
             <TextView
                 android:id="@+id/addCarText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Add Car" />
+                android:text="Add Camera" />
         </LinearLayout>
 
         <LinearLayout
@@ -203,7 +203,7 @@
                 android:layout_width="49dp"
                 android:layout_height="44dp"
                 android:layout_gravity="center"
-                app:srcCompat="@drawable/home" />
+                app:srcCompat="@drawable/ic_home" />
 
             <TextView
                 android:id="@+id/homeText"
@@ -227,7 +227,7 @@
                 android:layout_height="39dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
-                app:srcCompat="@drawable/aboutus" />
+                app:srcCompat="@drawable/ic_dialog_info" />
 
             <TextView
                 android:id="@+id/aboutusText"
@@ -251,7 +251,7 @@
                 android:layout_height="37dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
-                app:srcCompat="@drawable/account" />
+                app:srcCompat="@drawable/ic_user" />
 
             <TextView
                 android:id="@+id/accountText"

@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.083"
-        app:srcCompat="@drawable/contacct" />
+        app:srcCompat="@drawable/customer_service" />
 
     <TextView
         android:id="@+id/textView3"
@@ -42,7 +42,7 @@
         android:layout_weight="1"
 
         android:gravity="center"
-        android:text="RentalCompanyRRC@gmail.com"
+        android:text="RentCam1@gmail.com"
         android:textAlignment="center"
         android:textColor="#434E57"
         android:textSize="18sp"
@@ -88,7 +88,7 @@
         android:layout_height="50dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="+970-5678736728"
+        android:text="+62-8123456789"
         android:textColor="#49433A"
         android:textSize="20sp"
         android:textStyle="bold"

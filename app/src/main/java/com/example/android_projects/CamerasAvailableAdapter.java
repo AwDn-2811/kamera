@@ -1,6 +1,7 @@
 package com.example.android_projects;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +18,9 @@ import java.util.ArrayList;
 public class CamerasAvailableAdapter extends RecyclerView.Adapter<CamerasAvailableAdapter.ViewHolder> {
 
     Context context;
-    ArrayList<CameraCard> list;
+    ArrayList<AvailableCamera> list;
 
-    public CamerasAvailableAdapter(Context context, ArrayList<CameraCard> list) {
+    public CamerasAvailableAdapter(Context context, ArrayList<AvailableCamera> list) {
         this.context = context;
         this.list = list;
     }
@@ -34,18 +35,24 @@ public class CamerasAvailableAdapter extends RecyclerView.Adapter<CamerasAvailab
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CameraCard cam = list.get(position);
 
-        // Ambil data dari getter
+        AvailableCamera cam = list.get(position);
+
         holder.brand.setText(cam.getBrand());
-        holder.model.setText(cam.getModel());
-        holder.type.setText(cam.getType());
-        holder.price.setText(cam.getPrice());
+        holder.model.setText(cam.getName());
+        holder.type.setText(cam.getDescription());
+        holder.price.setText("Rp " + cam.getPricePerDay() + " / Hari");
 
-        // Load image
         Glide.with(context)
                 .load(cam.getImageUrl())
                 .into(holder.image);
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, CameraInformation.class);
+            intent.putExtra("cameraId", cam.getId());
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        });
     }
 
     @Override

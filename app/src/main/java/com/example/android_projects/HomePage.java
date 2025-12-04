@@ -45,7 +45,7 @@ public class HomePage extends AppCompatActivity {
 
     // Adapter & List Kamera
     private HomeCameraAdapter cameraAdapter;
-    private ArrayList<CameraCard> listOfCameras;
+    private ArrayList<AvailableCamera> listOfCameras;
 
     private FirebaseDatabase db;
 
@@ -215,18 +215,16 @@ public class HomePage extends AppCompatActivity {
 
                     if (isAvailable != null && isAvailable && count < 6) {
 
-                        CameraCard cam = new CameraCard();
+                        AvailableCamera cam = new AvailableCamera();
+
                         cam.setId(data.getKey());
-
-                        String brand = data.child("brand").getValue(String.class);
-                        String model = data.child("model").getValue(String.class);
-
-                        cam.setBrand(brand);
-                        cam.setModel(model);
+                        cam.setBrand(data.child("brand").getValue(String.class));
+                        cam.setName(data.child("name").getValue(String.class));
+                        cam.setDescription(data.child("description").getValue(String.class));
+                        cam.setAddress(data.child("address").getValue(String.class));
 
                         Long price = data.child("pricePerDay").getValue(Long.class);
-                        String priceText = "Rp " + (price != null ? price : 0) + " /Hari";
-                        cam.setPrice(priceText);
+                        cam.setPricePerDay(price != null ? price : 0);
 
                         cam.setImageUrl(data.child("imageUrl").getValue(String.class));
 
@@ -240,9 +238,9 @@ public class HomePage extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "DB Error: " + error.getMessage());
                 Toast.makeText(HomePage.this, "Gagal memuat data", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 }

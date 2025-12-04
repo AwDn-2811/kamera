@@ -15,4 +15,5 @@
     <color name="secondary3">#FCFFE7</color>
     <color name="warning">#EED202</color>
     <color name="error">#FF0000</color>
+    <color name="silver">#C0C0C0</color>
 </resources>

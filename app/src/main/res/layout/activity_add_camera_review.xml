@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Kirim Review"
-        android:backgroundTint="@color/primary"
+        android:backgroundTint="@color/grey"
         android:textColor="@android:color/white"
         android:layout_marginTop="20dp"
         android:padding="12dp" />

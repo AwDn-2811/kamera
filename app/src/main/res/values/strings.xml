@@ -19,12 +19,12 @@
     <string name="dropoffDateError">You must select drop-off date!</string>
     <string name="futureDatesError">You must select dates in future!</string>
     <string name="dropDateAfterPickupError">Pick-up Date should be before Drop-off Date!</string>
-    <string name="search_for_available_cars">Search For Available Cars</string>
+    <string name="search_for_available_cars">Search For Available Camera</string>
 
 
-    <string name="aboutUs1">Wherever you are, wherever you go,  we’ve got your ride.</string>
-    <string name="aboutUs2">Rover Rental Company (RRC) provides different cars with different features for rental with a direct connection with the owner</string>
-    <string name="contactus">How can we help you today? For any questions, comments or complaints...\n please contact us</string>
+    <string name="aboutUs1">Dimanapun Kita Berada, Abadikan Momenmu Bersama RentCam.</string>
+    <string name="aboutUs2">RentCam Menyediakan Berbagai Macam Kamera yang bisa kamu pinjam kapanpun dengan harga yang terjangkau. </string>
+    <string name="contactus">Ada yang bisa kami bantu? Untuk pertanyaan lain, Komentar dan Komplain...\n Silahkan hubungi kami</string>
     <string name="title_activity_user">UserActivity</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>

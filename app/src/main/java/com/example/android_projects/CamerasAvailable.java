@@ -21,7 +21,7 @@ public class CamerasAvailable extends AppCompatActivity {
 
     RecyclerView recyclerView;
     CamerasAvailableAdapter adapter;
-    ArrayList<CameraCard> list;
+    ArrayList<AvailableCamera> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,25 +51,17 @@ public class CamerasAvailable extends AppCompatActivity {
 
                 for (DataSnapshot data : snapshot.getChildren()) {
 
-                    CameraCard cam = new CameraCard();
+                    AvailableCamera cam = new AvailableCamera();
 
-                    // ID kamera
                     cam.setId(data.getKey());
-
-                    // Brand dan Model
                     cam.setBrand(data.child("brand").getValue(String.class));
-                    cam.setModel(data.child("model").getValue(String.class));
+                    cam.setName(data.child("name").getValue(String.class));
+                    cam.setDescription(data.child("description").getValue(String.class));
+                    cam.setAddress(data.child("address").getValue(String.class));
 
-                    // Type + Resolution
-                    String type = data.child("type").getValue(String.class);
-                    String resolution = data.child("resolution").getValue(String.class);
-                    cam.setType(type + " / " + resolution);
-
-                    // Price
                     Long price = data.child("pricePerDay").getValue(Long.class);
-                    cam.setPrice("Rp " + (price != null ? price : 0) + " / hari");
+                    cam.setPricePerDay(price != null ? price : 0);
 
-                    // Image URL
                     cam.setImageUrl(data.child("imageUrl").getValue(String.class));
 
                     list.add(cam);

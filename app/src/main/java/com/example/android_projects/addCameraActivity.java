@@ -32,25 +32,21 @@ public class addCameraActivity extends AppCompatActivity {
     private static final String TAG = "AddCameraActivity";
     private static final int PICK_IMAGE_REQUEST = 200;
 
-    // Variabel UI
+    // UI
     ImageView camera_preview;
     EditText input_brand, input_model, input_type, input_resolution, input_price, input_location;
     Button btn_choose, btn_save;
 
-    // Variabel Data
     Uri imageUri = null;
-    private CustomProgressDialog progressDialog; // Menggunakan CustomProgressDialog
+    private CustomProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 1. Inisialisasi Cloudinary
         initCloudinary();
-
         setContentView(R.layout.activity_add_camera);
 
-        // 2. Binding Views
         camera_preview   = findViewById(R.id.camera_preview);
         input_brand      = findViewById(R.id.input_brand);
         input_model      = findViewById(R.id.input_model);
@@ -64,14 +60,13 @@ public class addCameraActivity extends AppCompatActivity {
 
         progressDialog = new CustomProgressDialog(this);
 
-        // 3. Listener
         btn_choose.setOnClickListener(v -> chooseImage());
         btn_save.setOnClickListener(v -> saveCamera());
     }
 
     private void initCloudinary() {
         try {
-            MediaManager.get(); // kalau sudah init, ini tidak error
+            MediaManager.get();
         } catch (Exception e) {
             Map<String, Object> config = new HashMap<>();
             config.put("cloud_name", "dskqwokji");
@@ -96,7 +91,7 @@ public class addCameraActivity extends AppCompatActivity {
                 Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                 camera_preview.setImageBitmap(bmp);
             } catch (IOException e) {
-                Log.e(TAG, "Gagal memuat gambar", e);
+                Log.e(TAG, "Load gambar gagal", e);
                 Toast.makeText(this, "Gagal memuat gambar", Toast.LENGTH_SHORT).show();
             }
         }
@@ -104,76 +99,53 @@ public class addCameraActivity extends AppCompatActivity {
 
     private boolean validateInput() {
         if (imageUri == null) {
-            Toast.makeText(this, "Pilih gambar kamera dulu!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Pilih gambar terlebih dahulu!", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (input_brand.getText().toString().trim().isEmpty()) {
-            input_brand.setError("Brand wajib diisi");
-            return false;
-        }
-        if (input_model.getText().toString().trim().isEmpty()) {
-            input_model.setError("Model wajib diisi");
-            return false;
-        }
-        if (input_price.getText().toString().trim().isEmpty()) {
-            input_price.setError("Harga wajib diisi");
-            return false;
-        }
-        if (input_location.getText().toString().trim().isEmpty()) {
-            input_location.setError("Lokasi wajib diisi");
-            return false;
-        }
+        if (input_brand.getText().toString().trim().isEmpty()) { input_brand.setError("Brand wajib diisi"); return false; }
+        if (input_model.getText().toString().trim().isEmpty()) { input_model.setError("Model wajib diisi"); return false; }
+        if (input_type.getText().toString().trim().isEmpty()) { input_type.setError("Tipe wajib diisi"); return false; }
+        if (input_resolution.getText().toString().trim().isEmpty()) { input_resolution.setError("Resolusi wajib diisi"); return false; }
+        if (input_price.getText().toString().trim().isEmpty()) { input_price.setError("Harga wajib diisi"); return false; }
+        if (input_location.getText().toString().trim().isEmpty()) { input_location.setError("Lokasi wajib diisi"); return false; }
         return true;
     }
 
-    // ===========================================
-    // MAIN LOGIC: UPLOAD IMAGE THEN SAVE DATA
-    // ===========================================
-
     private void saveCamera() {
-        if (!validateInput()) {
-            return;
-        }
+        if (!validateInput()) return;
 
         progressDialog.show("Mengunggah gambar...");
 
-        MediaManager.get().upload(imageUri)
+        MediaManager.get()
+                .upload(imageUri)
                 .option("folder", "camera_rentals")
                 .callback(new UploadCallback() {
-                    @Override
-                    public void onStart(String requestId) {
-                        Log.d(TAG, "Upload Started: " + requestId);
-                    }
+                    @Override public void onStart(String requestId) {}
 
-                    @Override
-                    public void onProgress(String requestId, long bytes, long totalBytes) {
-                        // Bisa dipakai untuk update progress bar
-                    }
+                    @Override public void onProgress(String requestId, long bytes, long totalBytes) {}
 
                     @Override
                     public void onSuccess(String requestId, Map resultData) {
                         String imageUrl = (String) resultData.get("secure_url");
-                        Log.d(TAG, "Upload Success: " + imageUrl);
                         saveCameraDataToRealtimeDb(imageUrl);
                     }
 
                     @Override
                     public void onError(String requestId, ErrorInfo error) {
                         progressDialog.dismiss();
-                        Log.e(TAG, "Upload Error: " + error.getDescription());
                         Toast.makeText(addCameraActivity.this,
-                                "Gagal mengunggah gambar: " + error.getDescription(),
+                                "Gagal upload gambar: " + error.getDescription(),
                                 Toast.LENGTH_LONG).show();
                     }
 
-                    @Override
-                    public void onReschedule(String requestId, ErrorInfo error) {
-                        // Tidak digunakan
-                    }
-                }).dispatch();
+                    @Override public void onReschedule(String requestId, ErrorInfo error) {}
+                })
+                .dispatch();
     }
 
-    // === SIMPAN DATA KE REALTIME DATABASE ===
+    // ==================================================
+    // SAVE CAMERA DATA (FINAL STRUCTURE MATCH)
+    // ==================================================
     private void saveCameraDataToRealtimeDb(String imageUrl) {
 
         String brand      = input_brand.getText().toString().trim();
@@ -182,72 +154,63 @@ public class addCameraActivity extends AppCompatActivity {
         String resolution = input_resolution.getText().toString().trim();
         String address    = input_location.getText().toString().trim();
 
-        double priceValue = 0;
-        try {
-            priceValue = Double.parseDouble(input_price.getText().toString().trim());
-        } catch (NumberFormatException e) {
-            Log.e(TAG, "Harga tidak valid", e);
-        }
+        double priceValue;
+        try { priceValue = Double.parseDouble(input_price.getText().toString().trim()); }
+        catch (Exception e) { priceValue = 0; }
 
-        // 🔥 Ambil userId dari SharedPreferences (di-set di login.java)
+        // ambil user ID owner
         SharedPreferences sp = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         String ownerId = sp.getString("userId", null);
 
         if (ownerId == null) {
             progressDialog.dismiss();
-            Toast.makeText(this, "Session login hilang, silakan login ulang.", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, login.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            Toast.makeText(this, "Session habis, login ulang!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, login.class));
             finish();
             return;
         }
 
-        Log.d(TAG, "saveCameraDataToRealtimeDb: ownerId = " + ownerId);
-
-        // Data kamera yang akan disimpan
+        // FINAL DATA sesuai Firebase structure
         Map<String, Object> cam = new HashMap<>();
-        cam.put("name", brand + " " + model);
+
         cam.put("brand", brand);
+        cam.put("model", model);
+        cam.put("type", type);
+        cam.put("resolution", resolution);
+
+        // 🔥 DESKRIPSI SESUAI CAMERA INFORMATION
         cam.put("description", type + " / " + resolution);
+
         cam.put("pricePerDay", priceValue);
         cam.put("address", address);
+
+        // lokasi string (sesuai struktur database lo)
+        cam.put("location", address);
+
         cam.put("imageUrl", imageUrl);
         cam.put("ownerId", ownerId);
+
         cam.put("isAvailable", true);
-        cam.put("ratingAverage", 0.0);
+        cam.put("ratingAverage", 0);
         cam.put("reviewCount", 0);
         cam.put("createdAt", ServerValue.TIMESTAMP);
 
-        // lokasi dummy
-        Map<String, Object> location = new HashMap<>();
-        location.put("lat", -6.200000);
-        location.put("lng", 106.816666);
-        cam.put("location", location);
-
-        // Simpan ke Realtime Database: node "cameras"
-        DatabaseReference camerasRef = FirebaseDatabase.getInstance()
-                .getReference("cameras");
+        // push ke Firebase
+        DatabaseReference camerasRef =
+                FirebaseDatabase.getInstance().getReference("cameras");
 
         String cameraId = camerasRef.push().getKey();
-        if (cameraId == null) {
-            progressDialog.dismiss();
-            Toast.makeText(this, "Gagal membuat ID kamera.", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         camerasRef.child(cameraId)
                 .setValue(cam)
                 .addOnSuccessListener(unused -> {
                     progressDialog.dismiss();
                     Toast.makeText(addCameraActivity.this,
-                            "Kamera berhasil disimpan!",
-                            Toast.LENGTH_LONG).show();
+                            "Kamera berhasil disimpan!", Toast.LENGTH_LONG).show();
                     finish();
                 })
                 .addOnFailureListener(e -> {
                     progressDialog.dismiss();
-                    Log.e(TAG, "Error saving to Realtime DB", e);
                     Toast.makeText(addCameraActivity.this,
                             "Gagal menyimpan data: " + e.getMessage(),
                             Toast.LENGTH_LONG).show();

@@ -14,72 +14,78 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- GAMBAR KAMERA -->
         <ImageView
             android:id="@+id/camera_img"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="260dp"
             android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_camera"
-            android:contentDescription="Gambar Kamera" />
+            android:contentDescription="Gambar Kamera"
+            android:background="#F3F3F3" />
 
+        <!-- KONTEN DETAIL -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="18dp"
+            android:orientation="vertical">
 
+            <!-- JUDUL -->
             <TextView
                 android:id="@+id/txt_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Canon EOS R5"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
-                android:layout_marginBottom="8dp"/>
+                android:text="Canon EOS R5"
+                android:layout_marginBottom="10dp"/>
 
+            <!-- SPESIFIKASI -->
             <TextView
                 android:id="@+id/txt_sensor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sensor: Full Frame"
                 android:textSize="16sp"
+                android:text="Sensor: Full Frame"
                 android:layout_marginBottom="4dp"/>
 
             <TextView
                 android:id="@+id/txt_resolution"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Resolusi: 45 MP"
                 android:textSize="16sp"
+                android:text="Resolusi: 45MP"
                 android:layout_marginBottom="4dp"/>
 
             <TextView
                 android:id="@+id/txt_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Lokasi: Jakarta Selatan"
                 android:textSize="16sp"
-                android:drawablePadding="8dp"
+                android:drawablePadding="6dp"
                 app:drawableStartCompat="@android:drawable/ic_menu_mylocation"
+                android:text="Lokasi: Jakarta Selatan"
                 android:layout_marginBottom="16dp"/>
 
+            <!-- HARGA -->
             <TextView
                 android:id="@+id/txt_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Harga: Rp 250.000 / Hari"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#4CAF50"
-                android:layout_marginBottom="24dp"/>
+                android:textColor="#43A047"
+                android:text="Rp 250.000 / Hari"
+                android:layout_marginBottom="22dp"/>
 
+            <!-- TOMBOL -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="2"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="22dp">
 
                 <Button
                     android:id="@+id/btn_add_review"
@@ -87,8 +93,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Tulis Ulasan"
-                    android:layout_marginEnd="8dp"
-                    style="@style/Widget.AppCompat.Button.Colored"/>
+                    android:backgroundTint="#1976D2"
+                    android:textColor="@android:color/white"
+                    android:layout_marginEnd="8dp"/>
 
                 <Button
                     android:id="@+id/btn_rent"
@@ -96,31 +103,37 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Sewa Sekarang"
-                    android:layout_marginStart="8dp"
                     android:backgroundTint="#FF5722"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white"
+                    android:layout_marginStart="8dp"/>
             </LinearLayout>
 
+            <!-- GARIS PEMISAH -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E0E0E0"
+                android:background="#DADADA"
                 android:layout_marginBottom="16dp"/>
 
+            <!-- JUDUL ULASAN -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Ulasan Pengguna"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="12dp"/>
+                android:layout_marginBottom="10dp"/>
 
+            <!-- LIST REVIEW -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_reviews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_review_camera" />
+
         </LinearLayout>
+
     </LinearLayout>
+
 </androidx.core.widget.NestedScrollView>

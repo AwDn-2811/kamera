@@ -38,9 +38,10 @@ public class CameraInformation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_information);
 
-        cameraID = getIntent().getStringExtra("cameraID");
-
         initViews();
+
+        cameraID = getIntent().getStringExtra("cameraId");
+
         loadCameraData();
         loadReviews();
     }
@@ -75,7 +76,10 @@ public class CameraInformation extends AppCompatActivity {
     }
 
     private void loadCameraData() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("cameras").child(cameraID);
+
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("cameras")
+                .child(cameraID);
 
         ref.get().addOnSuccessListener(snapshot -> {
 
@@ -84,35 +88,37 @@ public class CameraInformation extends AppCompatActivity {
                 return;
             }
 
+            // ===== PAKAI FIELD YANG BENAR DARI DATABASE =====
             String brand = snapshot.child("brand").getValue(String.class);
-            String model = snapshot.child("model").getValue(String.class);
-            String type = snapshot.child("type").getValue(String.class);
-            String resolution = snapshot.child("resolution").getValue(String.class);
-            String price = snapshot.child("price").getValue(String.class);
-            String location = snapshot.child("location").getValue(String.class);
+            String name = snapshot.child("name").getValue(String.class);
+            String description = snapshot.child("description").getValue(String.class);
+            String address = snapshot.child("address").getValue(String.class);
             String imageUrl = snapshot.child("imageUrl").getValue(String.class);
+            Long price = snapshot.child("pricePerDay").getValue(Long.class);
 
-            txt_title.setText(brand + " " + model);
-            txt_sensor.setText("Sensor: " + type);
-            txt_resolution.setText("Resolusi: " + resolution);
-            txt_price.setText("Harga: " + price);
-            txt_location.setText("Lokasi: " + location);
+            // ============================
+            //   SET KE UI (NEW STRUCTURE)
+            // ============================
+            txt_title.setText(name != null ? name : brand);
 
-            if (imageUrl != null && !imageUrl.isEmpty()) {
+            txt_sensor.setText("Brand: " + brand);
+            txt_resolution.setText("Deskripsi: " + description);
+            txt_price.setText("Rp " + price + " / hari");
+            txt_location.setText("Lokasi: " + address);
+
+            if (imageUrl != null) {
                 Picasso.get().load(imageUrl).into(camera_img);
             }
 
-        }).addOnFailureListener(e ->
-                Toast.makeText(CameraInformation.this, "Gagal mengambil data kamera", Toast.LENGTH_SHORT).show()
-        );
+        }).addOnFailureListener(e -> {
+            Toast.makeText(CameraInformation.this, "Gagal mengambil data", Toast.LENGTH_SHORT).show();
+        });
     }
 
-    // =================== REVIEW SYSTEM ===================
     private void loadReviews() {
-        DatabaseReference ref =
-                FirebaseDatabase.getInstance().getReference("cameras")
-                        .child(cameraID)
-                        .child("reviews");
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("reviews")
+                .child(cameraID);
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -140,17 +146,17 @@ public class CameraInformation extends AppCompatActivity {
     }
 
     private void loadUserData(String userId, ReviewCamera review) {
+
         DatabaseReference userRef =
                 FirebaseDatabase.getInstance().getReference("users").child(userId);
 
         userRef.get().addOnSuccessListener(snapshot -> {
 
             if (snapshot.exists()) {
-                String firstName = snapshot.child("firstName").getValue(String.class);
-                String lastName = snapshot.child("lastName").getValue(String.class);
-                String photoUrl = snapshot.child("photoUrl").getValue(String.class);
+                String username = snapshot.child("username").getValue(String.class);
+                String photoUrl = snapshot.child("profile_image_url").getValue(String.class);
 
-                review.userName = firstName + " " + lastName;
+                review.userName = username;
 
                 if (photoUrl != null && !photoUrl.isEmpty()) {
                     review.userPhoto = photoUrl;

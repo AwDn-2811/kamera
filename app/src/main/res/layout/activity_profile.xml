@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:gravity="center|left"
-        android:text="Click To Update Your Information"
+        android:text="Click Here To Update Your Information"
         android:textColor="@color/primary"
         android:textSize="16sp"
         android:textStyle="bold|italic"
@@ -73,7 +73,7 @@
                 android:layout_width="46dp"
                 android:layout_height="43dp"
                 android:layout_margin="10dp"
-                app:srcCompat="@drawable/icons8_lgbtq_30" />
+                app:srcCompat="@drawable/icons8_gender" />
 
             <ImageView
                 android:id="@+id/imageView15"
@@ -176,7 +176,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/user" />
+        app:srcCompat="@drawable/photograph" />
 
     <ImageView
         android:id="@+id/imageView5"
@@ -187,7 +187,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.305"
-        app:srcCompat="@drawable/pr" />
+        app:srcCompat="@drawable/kamera_aestethic_resize" />
 
     <Button
         android:id="@+id/userActivity"

@@ -4,20 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary2"
+    android:background="@color/silver"
     tools:context=".Splash">
 
     <ImageView
         android:id="@+id/img_logo"
-        android:layout_width="372dp"
-        android:layout_height="186dp"
+        android:layout_width="312dp"
+        android:layout_height="126dp"
         android:layout_gravity="center"
         android:layout_marginTop="284dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.589"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/logo_rentcam" />
 
     <TextView
         android:id="@+id/tf_note"
@@ -28,7 +28,7 @@
         android:fontFamily="monospace"
         android:gravity="center"
         android:text="Rent with Confidence"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="26sp"
         android:textStyle="bold|italic"
         app:layout_constraintEnd_toEndOf="parent"
