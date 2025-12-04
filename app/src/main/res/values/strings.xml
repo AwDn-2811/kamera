@@ -2,7 +2,7 @@
     <string name="app_name">Rover Rental</string>
     <string name="logo">Logo</string>
     <string name="searchIcon">SearchIcon</string>
-    <string name="pick_up_location">Pick-up Location</string>
+    <string name="pick_up_location">Search Camera</string>
     <string name="pick_up_date">Pick-up Date</string>
     <string name="drop_off_date">Drop-off Date</string>
     <string name="title_activity_available_cars">AvailableCars</string>
@@ -19,7 +19,7 @@
     <string name="dropoffDateError">You must select drop-off date!</string>
     <string name="futureDatesError">You must select dates in future!</string>
     <string name="dropDateAfterPickupError">Pick-up Date should be before Drop-off Date!</string>
-    <string name="search_for_available_cars">Search For Available Camera</string>
+    <string name="search_for_available_cars">Search </string>
 
 
     <string name="aboutUs1">Dimanapun Kita Berada, Abadikan Momenmu Bersama RentCam.</string>
