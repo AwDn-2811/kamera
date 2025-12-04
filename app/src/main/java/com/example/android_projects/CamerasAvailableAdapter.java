@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class CamerasAvailableAdapter extends RecyclerView.Adapter<CamerasAvailableAdapter.ViewHolder> {
 
@@ -38,10 +40,17 @@ public class CamerasAvailableAdapter extends RecyclerView.Adapter<CamerasAvailab
 
         AvailableCamera cam = list.get(position);
 
+        // === FORMAT RUPIAH INDONESIA ===
+        NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
+        String hargaFormat = formatRupiah.format(cam.getPricePerDay());
+
+        // Replace "Rp" with "Rp " (biar ada spasi)
+        hargaFormat = hargaFormat.replace("Rp", "Rp ");
+
         holder.brand.setText(cam.getBrand());
         holder.model.setText(cam.getName());
         holder.type.setText(cam.getDescription());
-        holder.price.setText("Rp " + cam.getPricePerDay() + " / Hari");
+        holder.price.setText(hargaFormat + " / Hari");
 
         Glide.with(context)
                 .load(cam.getImageUrl())

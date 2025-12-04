@@ -20,19 +20,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class HomePage extends AppCompatActivity {
 
-    private EditText edt_pickupLocation;   // dipakai sebagai search bar kamera
+    private EditText edt_pickupLocation;
     private TextView tf_warning;
     private Button btn_search;
 
     private RecyclerView recycler_layout;
-    private HomeCameraAdapter cameraAdapter;
+    private CamerasAvailableAdapter cameraAdapter;
     private ArrayList<AvailableCamera> listOfCameras;
 
-    // Bottom menu
     private LinearLayout menu_addCamera, menu_feedback, menu_home, menu_aboutus, menu_account;
 
     @Override
@@ -57,26 +58,22 @@ public class HomePage extends AppCompatActivity {
 
         recycler_layout = findViewById(R.id.recycler_layout);
 
-        // RecyclerView VERTICAL
         recycler_layout.setHasFixedSize(true);
         recycler_layout.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         );
 
         listOfCameras = new ArrayList<>();
-        cameraAdapter = new HomeCameraAdapter(this, listOfCameras);
+        cameraAdapter = new CamerasAvailableAdapter(this, listOfCameras);
         recycler_layout.setAdapter(cameraAdapter);
 
-        // Load semua kamera pertama kali
         loadAllCameras();
 
-        // Tombol search diganti jadi cari berdasarkan nama kamera
         btn_search.setOnClickListener(v -> searchCameraByBrand());
 
-        // MENU NAVIGATION
         menu_addCamera.setOnClickListener(v -> startActivity(new Intent(this, addCameraActivity.class)));
         menu_feedback.setOnClickListener(v -> startActivity(new Intent(this, feedback.class)));
-        menu_home.setOnClickListener(v -> {}); // already here
+        menu_home.setOnClickListener(v -> {});
         menu_aboutus.setOnClickListener(v -> startActivity(new Intent(this, AboutUs.class)));
         menu_account.setOnClickListener(v -> startActivity(new Intent(this, Profile.class)));
     }
@@ -102,8 +99,8 @@ public class HomePage extends AppCompatActivity {
                         AvailableCamera cam = new AvailableCamera();
                         cam.setId(data.getKey());
                         cam.setBrand(data.child("brand").getValue(String.class));
-                        cam.setName(data.child("name").getValue(String.class));
-                        cam.setDescription(data.child("description").getValue(String.class));
+                        cam.setName(data.child("model").getValue(String.class));       // FIX
+                        cam.setDescription(data.child("type").getValue(String.class)); // FIX
                         cam.setAddress(data.child("address").getValue(String.class));
 
                         Long price = data.child("pricePerDay").getValue(Long.class);
@@ -126,7 +123,7 @@ public class HomePage extends AppCompatActivity {
     }
 
     // =========================================
-    //               SEARCH BY NAME
+    //               SEARCH BY BRAND
     // =========================================
     private void searchCameraByBrand() {
 
@@ -160,8 +157,10 @@ public class HomePage extends AppCompatActivity {
                         AvailableCamera cam = new AvailableCamera();
                         cam.setId(data.getKey());
                         cam.setBrand(brand);
-                        cam.setName(data.child("name").getValue(String.class));
-                        cam.setDescription(data.child("description").getValue(String.class));
+
+                        cam.setName(data.child("model").getValue(String.class));       // FIX
+                        cam.setDescription(data.child("type").getValue(String.class)); // FIX
+
                         cam.setAddress(data.child("address").getValue(String.class));
 
                         Long price = data.child("pricePerDay").getValue(Long.class);

@@ -63,7 +63,7 @@
         android:backgroundTint="#565A56"
         android:ems="10"
         android:gravity="center"
-        android:hint="Username"
+        android:hint="Email"
         android:inputType="textPersonName"
         android:padding="10dp"
         android:textColor="#FAF6F6"

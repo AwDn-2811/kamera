@@ -19,7 +19,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class CameraInformation extends AppCompatActivity {
 
@@ -103,8 +105,14 @@ public class CameraInformation extends AppCompatActivity {
 
             txt_sensor.setText("Brand: " + brand);
             txt_resolution.setText("Deskripsi: " + description);
-            txt_price.setText("Rp " + price + " / hari");
             txt_location.setText("Lokasi: " + address);
+
+// === FORMAT RUPIAH INDONESIA ===
+            NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
+            String hargaFormat = formatRupiah.format(price != null ? price : 0);
+            hargaFormat = hargaFormat.replace("Rp", "Rp ");   // biar rapi
+
+            txt_price.setText(hargaFormat + " / Hari");
 
             if (imageUrl != null) {
                 Picasso.get().load(imageUrl).into(camera_img);

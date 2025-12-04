@@ -6,6 +6,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Intent;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import org.json.JSONObject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -44,7 +50,7 @@ public class MakePaymentActivity extends AppCompatActivity {
         initViews();
         loadCameraData();
 
-        btn_confirm.setOnClickListener(v -> confirmBooking());
+        btn_confirm.setOnClickListener(v -> startPayment());
     }
 
     private void initViews() {
@@ -63,11 +69,14 @@ public class MakePaymentActivity extends AppCompatActivity {
 
         ref.get().addOnSuccessListener(snapshot -> {
 
-            price = snapshot.child("price").getValue(String.class);
+            Long priceLong = snapshot.child("pricePerDay").getValue(Long.class);
+            if (priceLong != null) {
+                price = String.valueOf(priceLong);
+            }
             location = snapshot.child("location").getValue(String.class);
             imageUrl = snapshot.child("imageUrl").getValue(String.class); // URL CLOUDINARY
 
-            txt_price.setText("Harga: " + price + " / hari");
+            txt_price.setText("Harga: Rp " + price + " / hari");
             txt_location.setText("Lokasi: " + location);
 
             // ⚡ MUAT GAMBAR DARI CLOUDINARY
@@ -77,6 +86,54 @@ public class MakePaymentActivity extends AppCompatActivity {
 
         });
     }
+
+    private void startPayment() {
+
+        if (price == null || price.isEmpty()) {
+            Toast.makeText(this, "Harga tidak valid", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            JSONObject body = new JSONObject();
+            body.put("order_id", "ORDER-" + System.currentTimeMillis());
+            body.put("gross_amount", Integer.parseInt(price));
+
+            RequestQueue queue = Volley.newRequestQueue(this);
+            String url = "http://192.168.1.27:3000/create-transaction";
+
+            JsonObjectRequest req = new JsonObjectRequest(
+                    Request.Method.POST, url, body,
+                    response -> {
+
+                        try {
+                            String snapUrl = response.getString("redirect_url");
+
+                            Intent i = new Intent(MakePaymentActivity.this, WebViewPayment.class);
+                            i.putExtra("snapUrl", snapUrl);
+                            i.putExtra("cameraID", cameraID);
+                            i.putExtra("fromDate", fromDate);
+                            i.putExtra("toDate", toDate);
+                            i.putExtra("price", price);
+                            i.putExtra("location", location);
+                            i.putExtra("imageUrl", imageUrl);
+                            startActivity(i);
+
+                        } catch (Exception e) {
+                            Toast.makeText(this, "Gagal parsing Snap URL", Toast.LENGTH_SHORT).show();
+                        }
+
+                    },
+                    error -> Toast.makeText(this, "Gagal koneksi server Midtrans", Toast.LENGTH_SHORT).show()
+            );
+
+            queue.add(req);
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Error membuat transaksi", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void confirmBooking() {
 
