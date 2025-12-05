@@ -139,7 +139,7 @@
                 android:layout_width="51dp"
                 android:layout_height="42dp"
                 android:layout_gravity="center"
-                app:srcCompat="@drawable/ic_add" />
+                app:srcCompat="@drawable/add_camera" />
 
             <TextView
                 android:id="@+id/addCarText"

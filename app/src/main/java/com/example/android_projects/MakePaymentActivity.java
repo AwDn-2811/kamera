@@ -13,6 +13,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import org.json.JSONObject;
 
+import android.app.DatePickerDialog;
+import java.util.Calendar;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DatabaseReference;
@@ -24,6 +27,7 @@ public class MakePaymentActivity extends AppCompatActivity {
     ImageView camera_img;
     TextView txt_price, txt_dates, txt_location;
     Button btn_confirm;
+    Button btnPickDates;
 
     String cameraID = "";
     String userID = "";
@@ -59,6 +63,10 @@ public class MakePaymentActivity extends AppCompatActivity {
         txt_dates = findViewById(R.id.txt_dates);
         txt_location = findViewById(R.id.txt_location);
         btn_confirm = findViewById(R.id.btn_confirm);
+        btnPickDates = findViewById(R.id.btn_pick_dates);
+
+        btnPickDates.setOnClickListener(v -> pickDates());
+
 
         txt_dates.setText("Tanggal: " + fromDate + " - " + toDate);
     }
@@ -88,6 +96,17 @@ public class MakePaymentActivity extends AppCompatActivity {
     }
 
     private void startPayment() {
+
+        // 🔥 CEK APAKAH TANGGAL SUDAH DIPILIH
+        if (fromDate.equals("-") || toDate.equals("-")) {
+            Toast.makeText(this, "Silakan pilih tanggal mulai dan selesai terlebih dahulu", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (fromDate.isEmpty() || toDate.isEmpty()) {
+            Toast.makeText(this, "Tanggal belum lengkap, pilih tanggal lagi", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (price == null || price.isEmpty()) {
             Toast.makeText(this, "Harga tidak valid", Toast.LENGTH_SHORT).show();
@@ -152,5 +171,40 @@ public class MakePaymentActivity extends AppCompatActivity {
         Toast.makeText(this, "Pemesanan berhasil! Bayar di tempat.", Toast.LENGTH_LONG).show();
 
         finish();
+    }
+    private void pickDates() {
+
+        final Calendar calendar = Calendar.getInstance();
+
+        DatePickerDialog startPicker = new DatePickerDialog(
+                MakePaymentActivity.this,
+                (view, year, month, day) -> {
+
+                    fromDate = day + "/" + (month + 1) + "/" + year;
+
+                    DatePickerDialog endPicker = new DatePickerDialog(
+                            MakePaymentActivity.this,
+                            (view2, year2, month2, day2) -> {
+
+                                toDate = day2 + "/" + (month2 + 1) + "/" + year2;
+
+                                txt_dates.setText("Tanggal: " + fromDate + " - " + toDate);
+
+                                SharedPreferences.Editor editor = getSharedPreferences("dates", MODE_PRIVATE).edit();
+                                editor.putString("fromDate", fromDate);
+                                editor.putString("toDate", toDate);
+                                editor.apply();
+
+                            }, year, month, day
+                    );
+
+                    endPicker.setTitle("Pilih Tanggal Selesai");
+                    endPicker.show();
+
+                }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)
+        );
+
+        startPicker.setTitle("Pilih Tanggal Mulai");
+        startPicker.show();
     }
 }

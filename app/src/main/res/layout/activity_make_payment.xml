@@ -61,11 +61,20 @@
                         android:id="@+id/txt_dates"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="Tanggal: 20 Nov - 22 Nov"
+                        android:text="Pilih tanggal sewa"
                         android:textSize="16sp"
                         android:textColor="#333333"
                         android:textStyle="bold"
-                        android:layout_marginBottom="12dp"/>
+                        android:layout_marginBottom="8dp"/>
+
+                    <Button
+                        android:id="@+id/btn_pick_dates"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pilih Tanggal"
+                        android:backgroundTint="#2196F3"
+                        android:textColor="#FFFFFF"/>
+
 
                     <View
                         android:layout_width="match_parent"
@@ -118,35 +127,36 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="30dp"
             android:background="@color/white"
-            android:padding="16dp"
             android:gravity="center_vertical"
-            android:layout_marginBottom="30dp">
+            android:orientation="horizontal"
+            android:padding="16dp">
+
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@android:drawable/ic_dialog_info"
-                app:tint="#FF9800"/>
+                app:tint="#FF9800" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Metode Pembayaran: Bayar di Tempat (Cash/QRIS) saat pengambilan alat."
-                android:textSize="13sp"
                 android:layout_marginStart="12dp"
-                android:textColor="#555555"/>
+                android:text="Metode Pembayaran: Bayar di Tempat (Cash/e-wallet) saat pengambilan alat."
+                android:textColor="#555555"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <Button
             android:id="@+id/btn_confirm"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:text="Konfirmasi Pesanan"
+            android:layout_height="50dp"
             android:backgroundTint="#2196F3"
+            android:text="Konfirmasi Pesanan"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
     </LinearLayout>
 </ScrollView>
