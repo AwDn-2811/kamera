@@ -20,15 +20,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class HomePage extends AppCompatActivity {
 
     private EditText edt_pickupLocation;
     private TextView tf_warning;
-    private Button btn_search;
+    private Button btn_search, btn_rental_history;
 
     private RecyclerView recycler_layout;
     private CamerasAvailableAdapter cameraAdapter;
@@ -49,6 +47,9 @@ public class HomePage extends AppCompatActivity {
         edt_pickupLocation = findViewById(R.id.edt_pickupLocation);
         tf_warning = findViewById(R.id.tf_warning);
         btn_search = findViewById(R.id.btn_search);
+
+        // 🔥 Button history rental
+        btn_rental_history = findViewById(R.id.btn_rental_history);
 
         menu_addCamera = findViewById(R.id.menu_addCar);
         menu_feedback = findViewById(R.id.menu_feedback);
@@ -71,6 +72,12 @@ public class HomePage extends AppCompatActivity {
 
         btn_search.setOnClickListener(v -> searchCameraByBrand());
 
+        // 🔥 Go to Rental History
+        btn_rental_history.setOnClickListener(v -> {
+            startActivity(new Intent(HomePage.this, RentalHistoryActivity.class));
+        });
+
+        // Bottom menu
         menu_addCamera.setOnClickListener(v -> startActivity(new Intent(this, addCameraActivity.class)));
         menu_feedback.setOnClickListener(v -> startActivity(new Intent(this, feedback.class)));
         menu_home.setOnClickListener(v -> {});
@@ -78,9 +85,9 @@ public class HomePage extends AppCompatActivity {
         menu_account.setOnClickListener(v -> startActivity(new Intent(this, Profile.class)));
     }
 
-    // =========================================
-    //             LOAD CAMERA DEFAULT
-    // =========================================
+    // ===================================================
+    //               LOAD ALL CAMERA
+    // ===================================================
     private void loadAllCameras() {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("cameras");
 
@@ -99,8 +106,8 @@ public class HomePage extends AppCompatActivity {
                         AvailableCamera cam = new AvailableCamera();
                         cam.setId(data.getKey());
                         cam.setBrand(data.child("brand").getValue(String.class));
-                        cam.setName(data.child("model").getValue(String.class));       // FIX
-                        cam.setDescription(data.child("type").getValue(String.class)); // FIX
+                        cam.setName(data.child("model").getValue(String.class));
+                        cam.setDescription(data.child("type").getValue(String.class));
                         cam.setAddress(data.child("address").getValue(String.class));
 
                         Long price = data.child("pricePerDay").getValue(Long.class);
@@ -117,14 +124,14 @@ public class HomePage extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(HomePage.this, "Gagal memuat data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomePage.this, "Gagal memuat data kamera", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // =========================================
-    //               SEARCH BY BRAND
-    // =========================================
+    // ===================================================
+    //             SEARCH CAMERA BY BRAND
+    // ===================================================
     private void searchCameraByBrand() {
 
         String keyword = edt_pickupLocation.getText().toString().trim();
@@ -157,10 +164,8 @@ public class HomePage extends AppCompatActivity {
                         AvailableCamera cam = new AvailableCamera();
                         cam.setId(data.getKey());
                         cam.setBrand(brand);
-
-                        cam.setName(data.child("model").getValue(String.class));       // FIX
-                        cam.setDescription(data.child("type").getValue(String.class)); // FIX
-
+                        cam.setName(data.child("model").getValue(String.class));
+                        cam.setDescription(data.child("type").getValue(String.class));
                         cam.setAddress(data.child("address").getValue(String.class));
 
                         Long price = data.child("pricePerDay").getValue(Long.class);

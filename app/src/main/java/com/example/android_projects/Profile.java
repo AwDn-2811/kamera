@@ -20,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class Profile extends AppCompatActivity {
 
     static String user_id;
-    private TextView updateInfo;
+    private Button updateInfo;   // 🔥 ganti TextView → Button
     private Button userActivity, logout_btn;
     private TextView name, lname, email, contact, gender, dob;
     private DatabaseReference rootDatabaseref;
@@ -29,92 +29,54 @@ public class Profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getReference();
 
+        getReference();
 
         SharedPreferences sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         user_id = sharedPreferences.getString("userId", "");
 
-        userActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Profile.this, UserActivity.class);
-                intent.putExtra("userId", user_id);
-                startActivity(intent);
-            }
+        userActivity.setOnClickListener(v -> {
+            Intent intent = new Intent(Profile.this, UserActivity.class);
+            intent.putExtra("userId", user_id);
+            startActivity(intent);
         });
 
+        logout_btn.setOnClickListener(v -> {
+            SharedPreferences sharedPreferences1 = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences1.edit();
+            editor.putString("userId", null);
+            editor.apply();
 
-        logout_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("userId", null);
-                editor.apply();
-
-                Intent intent = new Intent(Profile.this, login.class);
-                intent.putExtra("userId", "");
-                startActivity(intent);
-                finish();
-            }
+            Intent intent = new Intent(Profile.this, login.class);
+            intent.putExtra("userId", "");
+            startActivity(intent);
+            finish();
         });
 
-        updateInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Profile.this, UpdateProfile.class);
-                intent.putExtra("userId", user_id);
-                startActivity(intent);
-            }
+        updateInfo.setOnClickListener(v -> {
+            Intent intent = new Intent(Profile.this, UpdateProfile.class);
+            intent.putExtra("userId", user_id);
+            startActivity(intent);
         });
+
 
         rootDatabaseref = FirebaseDatabase.getInstance().getReference();
-        rootDatabaseref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    if (task.getResult().exists()) {
-                        DataSnapshot dataSnapshot = task.getResult();
-                        String data1 = dataSnapshot.child("users").child(user_id).child("firstName").getValue(String.class);
-                        String data2 = dataSnapshot.child("users").child(user_id).child("email").getValue().toString().trim();
-                        String data3 = dataSnapshot.child("users").child(user_id).child("phoneNumber").getValue().toString().trim();
-                        String data4 = dataSnapshot.child("users").child(user_id).child("gender").getValue().toString().trim();
-                        String data5 = dataSnapshot.child("users").child(user_id).child("lastName").getValue().toString().trim();
-                        String data6 = dataSnapshot.child("users").child(user_id).child("dob").getValue().toString().trim();
+        rootDatabaseref.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful() && task.getResult().exists()) {
+                DataSnapshot data = task.getResult();
 
-                        name.setText(data1);
-                        email.setText(data2);
-                        contact.setText(data3);
-                        gender.setText(data4);
-                        lname.setText(data5);
-                        dob.setText(data6);
-                    }
-                }
+                name.setText(data.child("users").child(user_id).child("firstName").getValue(String.class));
+                lname.setText(data.child("users").child(user_id).child("lastName").getValue(String.class));
+                email.setText(data.child("users").child(user_id).child("email").getValue(String.class));
+                contact.setText(data.child("users").child(user_id).child("phoneNumber").getValue(String.class));
+                gender.setText(data.child("users").child(user_id).child("gender").getValue(String.class));
+                dob.setText(data.child("users").child(user_id).child("dob").getValue(String.class));
             }
         });
-//
-//        SharedPreferences shp = getSharedPreferences("key",MODE_PRIVATE);
-//        String value1 = shp.getString("value1", " ");
-//        String value2 = shp.getString("value2", " ");
-//        String value3 = shp.getString("value3", " ");
-//        String value4 = shp.getString("value4", " ");
-//        String value5 = shp.getString("value5", " ");
-//        String value6 = shp.getString("value6", " ");
-//
-//        name.setText(value1);
-//        email.setText(value2);
-//        contact.setText(value3);
-//        gender.setText(value4);
-//        lname.setText(value5);
-//        dob.setText(value6);
-
-
     }
 
     private void getReference() {
-        updateInfo = findViewById(R.id.updateInfo);
+        updateInfo = findViewById(R.id.updateInfoBtn);   // 🟢 sudah Button
         userActivity = findViewById(R.id.userActivity);
         name = findViewById(R.id.fnametxt);
         email = findViewById(R.id.emailtxt);
@@ -123,7 +85,5 @@ public class Profile extends AppCompatActivity {
         lname = findViewById(R.id.lnametxt);
         dob = findViewById(R.id.dobtxt);
         logout_btn = findViewById(R.id.logout_btn);
-
-
     }
 }

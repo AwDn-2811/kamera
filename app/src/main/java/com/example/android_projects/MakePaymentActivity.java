@@ -119,7 +119,7 @@ public class MakePaymentActivity extends AppCompatActivity {
             body.put("gross_amount", Integer.parseInt(price));
 
             RequestQueue queue = Volley.newRequestQueue(this);
-            String url = "http://192.168.1.27:3000/create-transaction";
+            String url = "http://192.168.1.7:3000/create-transaction";
 
             JsonObjectRequest req = new JsonObjectRequest(
                     Request.Method.POST, url, body,

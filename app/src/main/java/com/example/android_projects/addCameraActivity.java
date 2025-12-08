@@ -178,7 +178,7 @@ public class addCameraActivity extends AppCompatActivity {
         cam.put("type", type);
         cam.put("resolution", resolution);
 
-        // 🔥 DESKRIPSI SESUAI CAMERA INFORMATION
+        // DESKRIPSI SESUAI CAMERA INFORMATION
         cam.put("description", type + " / " + resolution);
 
         cam.put("pricePerDay", priceValue);

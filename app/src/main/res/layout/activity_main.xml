@@ -81,6 +81,18 @@
                 android:textColor="@color/error" />
         </LinearLayout>
 
+        <Button
+            android:id="@+id/btn_rental_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="Lihat History Rental"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/primary"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/textView20"
@@ -95,7 +107,7 @@
         <LinearLayout
             android:id="@+id/camera_container"
             android:layout_width="match_parent"
-            android:layout_height="329dp"
+            android:layout_height="264dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
@@ -108,10 +120,10 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_layout"
                 android:layout_width="match_parent"
-                android:layout_height="296dp"
+                android:layout_height="wrap_content"
+                android:fadeScrollbars="false"
                 android:padding="12dp"
-                android:scrollbars="vertical"
-                android:fadeScrollbars="false" />
+                android:scrollbars="vertical" />
 
         </LinearLayout>
 
